@@ -41,6 +41,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"database/sql/driver"
 	"time"
 )
 
@@ -312,5 +313,29 @@ func (d *Date) UnmarshalText(data []byte) error {
 		return err
 	}
 	d.day = u.day
+	return nil
+}
+
+func (d Date) Value() (driver.Value, error) {
+	return driver.Value(d.String()), nil
+}
+
+func (d *Date) Scan(src interface{}) error {
+	var str string
+	switch s := src.(type) {
+	case string:
+		str = s
+	case []byte:
+		str = string(s)
+	default:
+		return fmt.Errorf("date.Date scan type error")
+	}
+
+	u, err := ParseISO(str)
+	if err != nil {
+		return fmt.Errorf("date.Date scan ParseISO: %w", err)
+	}
+	d.day = u.day
+
 	return nil
 }

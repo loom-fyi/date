@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/fxtlabs/date"
+	"github.com/loom-fyi/date"
 )
 
 func ExampleMax() {

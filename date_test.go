@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/fxtlabs/date"
+	"github.com/loom-fyi/date"
 )
 
 func same(d date.Date, t time.Time) bool {
@@ -351,5 +351,24 @@ func TestInvalidText(t *testing.T) {
 		if err == nil || err.Error() != c.want {
 			t.Errorf("InvalidText(%v) == %v, want %v", c.value, err, c.want)
 		}
+	}
+}
+
+func TestSQL(t *testing.T) {
+	d := date.TodayUTC()
+
+	v, err := d.Value()
+	if err != nil {
+		t.Errorf("error .Value: %v", err)
+	}
+
+	var w date.Date
+	err = w.Scan(v)
+	if err != nil {
+		t.Errorf("error .Scan: %v", err)
+	}
+
+	if !d.Equal(w) {
+		t.Errorf("error wanted %v got %v", d, w)
 	}
 }
